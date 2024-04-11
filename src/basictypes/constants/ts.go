@@ -1,0 +1,6 @@
+package constants
+
+const (
+	BASE_TIMESTAMP    = 1514764800
+	TS_BASE_TIMESTAMP = 1561939200000000000 // July 1, 2019, 00:00:00
+)

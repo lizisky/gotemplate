@@ -1,0 +1,18 @@
+version: "3"
+
+networks:
+  lizisky:
+    external: false
+
+services:
+  server:
+    image: lizitime/liziskyd
+    container_name: lizisky
+    restart: always
+    networks:
+      - lizisky
+    command: liziskyd -log_dir=/data/.lizi_data/logs -alsologtostderr -data_dir=/data/.lizi_data
+    volumes:
+      - /Users/andy/.lizi_data:/data/.lizi_data
+    ports:
+      - "8081:8081"

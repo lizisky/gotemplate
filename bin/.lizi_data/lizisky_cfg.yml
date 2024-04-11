@@ -1,0 +1,18 @@
+ServerAddr: ":8081"
+MinVersion: 10101
+WXMini:
+  AppID: "your/wx/mini/program/appid"
+  Secret: "your/wx/mini/program/secret"
+Qiniu:
+  Domain: "your/qiniu/domain"
+  Bucket: "your/bucket"
+  AccessKey: "your/access/key"
+  SecretKey: "your/secret/key"
+  UploadExpires: 10     # 上传凭证有效期, 单位: 分钟
+  DownloadExpires: 120  # 下载凭证有效期, 单位: 分钟
+MySQL:
+  DBHost: "localhost:3306"
+  DBUser: "root"
+  DBUserPwd: "123456"
+  DBDatabase: "lizisky001"
+  MaxConn: 10
