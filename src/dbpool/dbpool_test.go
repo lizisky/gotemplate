@@ -1,29 +1,44 @@
 package dbpool
 
-// import (
-// 	"fmt"
-// 	"testing"
-// 	"time"
+import (
+	"fmt"
+	"testing"
+	"time"
 
-// 	"github.com/lizisky/liziutils/utils"
-// 	"lizisky.com/lizisky/src/basictypes/basictype"
-// 	orgtype "lizisky.com/lizisky/src/basictypes/orgtype_common"
-// 	eduorg "lizisky.com/lizisky/src/basictypes/orgtype_edu"
-// 	"lizisky.com/lizisky/src/config"
-// 	"lizisky.com/lizisky/src/dbpool/dbimpl"
-// )
+	"github.com/lizisky/liziutils/utils"
+	"lizisky.com/lizisky/src/basictypes/accounts"
+	"lizisky.com/lizisky/src/config"
+	"lizisky.com/lizisky/src/dbpool/dbimpl"
+)
 
-// func TestDB_impl(t *testing.T) {
-// 	if !config.LoadConfig() {
-// 		return
-// 	}
+func TestDB_impl(t *testing.T) {
+	if !config.LoadConfig() {
+		return
+	}
 
-// 	dbimpl.NewDBConnection(nil)
-// 	defer dbimpl.DB.Close()
+	dbimpl.NewDBConnection(nil)
+	defer dbimpl.CloseDB()
+	// dbimpl.GetDB().DB().Close()
 
-// 	// tmp_create_read_org()
-// 	tmp_create_read_course()
-// }
+	// tmp_create_read_org()
+	// tmp_create_read_course()
+	tmp_create_read_user()
+}
+
+// 写一个测试函数，用于测试在数据库中插入和读取用户数据
+func tmp_create_read_user() {
+	// 创建一个用户对象
+	user1 := &accounts.Account{
+		Nickname: "user+" + time.Now().String(),
+		WxOpenID: "wxopenid" + time.Now().String(),
+		Password: "password",
+		Email:    "email",
+		Mobile:   "phone",
+	}
+
+	dbimpl.AddNewRecord(user1)
+	fmt.Println("create - user1: ", utils.ToJSONIndent(user1))
+}
 
 // func tmp_create_read_org() {
 // 	org1 := &orgtype.Organization{

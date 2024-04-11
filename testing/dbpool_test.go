@@ -211,7 +211,7 @@ package main
 // // func buildDB_Config() *config.Configuration {
 // // 	return &config.Configuration{
 // // 		ServerAddr: ":8081",
-// // 		MySQL: config.DBConfig{
+// // 		MySQL: config.DBConfigMySQL{
 // // 			DBHost:     "localhost:3306",
 // // 			DBUser:     "root",
 // // 			DBUserPwd:  "123456",

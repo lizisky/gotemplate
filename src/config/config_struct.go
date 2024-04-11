@@ -12,8 +12,14 @@ type Configuration struct {
 	// qiniu config
 	Qiniu QiniuConfig `yaml:"Qiniu"`
 
+	// DBType: 1: SQLite3   2: MySQL
+	DBType uint32 `yaml:"DBType"`
+
 	// mysql config
-	MySQL DBConfig `yaml:"MySQL"`
+	MySQL DBConfigMySQL `yaml:"MySQL"`
+
+	// SQLite config
+	SQLite DBConfigSQLite `yaml:"SQLite"`
 }
 
 // wechat config
@@ -33,13 +39,20 @@ type QiniuConfig struct {
 }
 
 // mysql config
-type DBConfig struct {
+type DBConfigMySQL struct {
 	DBHost     string `yaml:"DBHost"`
 	DBUser     string `yaml:"DBUser"`
 	DBUserPwd  string `yaml:"DBUserPwd"`
 	DBDatabase string `yaml:"DBDatabase"`
 	MaxConn    int    `yaml:"MaxConn"`
 }
+
+// SQLite config
+type DBConfigSQLite struct {
+	DBPath string `yaml:"DBPath"`
+}
+
+// ====================================================================
 
 func (cfg *Configuration) IsValid() error {
 	if err := cfg.MySQL.IsValid(); err != nil {
@@ -49,6 +62,6 @@ func (cfg *Configuration) IsValid() error {
 	return nil
 }
 
-func (dbcfg *DBConfig) IsValid() error {
+func (dbcfg *DBConfigMySQL) IsValid() error {
 	return nil
 }

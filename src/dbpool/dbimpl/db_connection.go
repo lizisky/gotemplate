@@ -2,12 +2,14 @@ package dbimpl
 
 import (
 	"fmt"
+	"path"
 
-	"gorm.io/driver/mysql"
 	"lizisky.com/lizisky/src/basictypes/accounts"
 	orgtype "lizisky.com/lizisky/src/basictypes/orgtype_common"
 	"lizisky.com/lizisky/src/config"
 
+	"gorm.io/driver/mysql"
+	"gorm.io/driver/sqlite" // Sqlite driver based on CGO
 	"gorm.io/gorm"
 )
 
@@ -53,26 +55,39 @@ func GetDB() *gorm.DB {
 	return localDB.currDB
 }
 
+func CloseDB() {
+	if localDB != nil {
+		localDB.Close()
+		localDB = nil
+	}
+}
+
 // ----------------------------------------------------------------------------
 func NewDBConnection(cfg *config.Configuration) *DBPool {
 	if cfg == nil {
 		cfg = config.GetConfig()
 	}
-	localDB = initDb(&cfg.MySQL)
+	switch cfg.DBType {
+	case 1: // SQLite3
+		localDB = initDb_SQLite(&cfg.SQLite)
+	case 2: // MySQL
+		localDB = initDb_mysql(&cfg.MySQL)
+	}
 	initDB_autoMigration()
 
 	return localDB
 }
 
 // build mysql DB dsn
-func build_DB_dsn(dbcfg *config.DBConfig) string {
-	dsn := fmt.Sprintf("%s:%s@tcp(%s)/%s?charset=utf8mb4&parseTime=True&loc=Local", dbcfg.DBUser, dbcfg.DBUserPwd, dbcfg.DBHost, dbcfg.DBDatabase)
-	return dsn
-}
+// func build_DB_dsn(dbcfg *config.DBConfigMySQL) string {
+// 	dsn := fmt.Sprintf("%s:%s@tcp(%s)/%s?charset=utf8mb4&parseTime=True&loc=Local", dbcfg.DBUser, dbcfg.DBUserPwd, dbcfg.DBHost, dbcfg.DBDatabase)
+// 	return dsn
+// }
 
 // init mysql DB connection
-func initDb(dbcfg *config.DBConfig) *DBPool {
-	dsn := build_DB_dsn(dbcfg)
+func initDb_mysql(dbcfg *config.DBConfigMySQL) *DBPool {
+	// dsn := build_DB_dsn(dbcfg)
+	dsn := fmt.Sprintf("%s:%s@tcp(%s)/%s?charset=utf8mb4&parseTime=True&loc=Local", dbcfg.DBUser, dbcfg.DBUserPwd, dbcfg.DBHost, dbcfg.DBDatabase)
 	db, err := gorm.Open(mysql.Open(dsn), &gorm.Config{})
 
 	if err != nil {
@@ -83,6 +98,22 @@ func initDb(dbcfg *config.DBConfig) *DBPool {
 	if (err == nil) && (sqldb != nil) {
 		sqldb.SetMaxOpenConns(dbcfg.MaxConn)
 		sqldb.SetMaxIdleConns(dbcfg.MaxConn)
+	}
+
+	return &DBPool{
+		currDB: db,
+		isConn: true,
+	}
+}
+
+// init SQLite DB connection
+func initDb_SQLite(dbcfg *config.DBConfigSQLite) *DBPool {
+
+	dbpath := path.Join(config.GetDataDir(), dbcfg.DBPath)
+	db, err := gorm.Open(sqlite.Open(dbpath), &gorm.Config{})
+
+	if err != nil {
+		panic("open SQLite error:" + err.Error())
 	}
 
 	return &DBPool{

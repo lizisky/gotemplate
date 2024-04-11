@@ -1,5 +1,5 @@
 ServerAddr: ":8081"
-MinVersion: 10101
+MinVersion: 10101   # Minimum version of the client
 WXMini:
   AppID: "your/wx/mini/program/appid"
   Secret: "your/wx/mini/program/secret"
@@ -10,9 +10,12 @@ Qiniu:
   SecretKey: "your/secret/key"
   UploadExpires: 10     # 上传凭证有效期, 单位: 分钟
   DownloadExpires: 120  # 下载凭证有效期, 单位: 分钟
+DBType: 1  # 1: SQLite, 2: MySQL
 MySQL:
   DBHost: "localhost:3306"
   DBUser: "root"
   DBUserPwd: "123456"
   DBDatabase: "lizisky001"
   MaxConn: 10
+SQLite:
+  DBPath: "lizisky.db"
